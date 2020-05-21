@@ -1,0 +1,20 @@
+# Python
+*.egg-info
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Matlab
+*.m~
+*.asv
+*.mat
+
+# VScode
+.vscode/
+
+# Zip files
+*.zip
+
+# Video
+*.avi

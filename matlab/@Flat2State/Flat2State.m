@@ -15,9 +15,11 @@ end
 
 methods (Static)
     % externally defined
-    [ref] = computeQuadrotorMoment(aQ, daQ, d2aQ, varargin)
     [ref] = quadrotor(traj, mQ, J)
-    [ref] = quadrotorLoad()
+    [ref] = computeQuadrotorMoment(aQ, daQ, d2aQ, varargin)
+
+    [ref] = quadrotorLoad(traj, mQ, J, mL, l, sgnT)
+    [ref] = computeLoadAttitudes(Tq, dTq, d2Tq, d3Tq, d4Tq, sgnT)
 end
     
 end

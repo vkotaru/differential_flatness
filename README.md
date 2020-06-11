@@ -2,8 +2,8 @@
 Differential flatness for quadrotor systems such as quadrotor, quadrotor on suspended load, multiple quadrotors with suspended load 
 
 ### References
-- One of the earliest papers on differential flatness in mechanical systems [link]()
-- Papers discussing differential flatness of a quadrotor [link1](), [link2]()
-- Those discusses differential flatness of a quadrotor with payload-suspended using cable system [link1]()
+- One of the earliest papers on differential flatness in mechanical systems [link](http://www.cds.caltech.edu/~murray/preprints/mrs95-imece.pdf), [link2](https://doi.org/10.1016/S1474-6670(17)58016-7)
+- Papers discussing differential flatness of a quadrotor [link1](https://doi.org/10.1109/ICRA.2011.5980409), [link2](https://doi.org/10.1109/LRA.2017.2776353)
+- Those discusses differential flatness of a quadrotor with payload-suspended using cable system [link1](https://doi.org/10.1109/CDC.2013.6760219)
 - Other related systems, [Multiple quadrotors and payload], [Multiple quadrotors with flexible cables in], [Multiple quadrotor with flexible cables in series]
 

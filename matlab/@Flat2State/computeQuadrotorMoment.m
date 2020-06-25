@@ -6,6 +6,7 @@ e3 = [0;0;1];
 
 g = 9.81;
 
+% << TODO remove this hard-code in the future >> 
 b1d = e1 ;
 db1d = zeros(3,1) ;
 d2b1d = zeros(3,1) ;

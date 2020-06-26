@@ -44,6 +44,10 @@ LAMBDA = [(1/4)*mL*g*vec_dot(RotY(pi/6)*e3,e1);
                 (1/4)*mL*g*vec_dot(RotY(pi/6)*e3,e2);
                 (1/4)*mL*g*vec_dot(RotX(pi/6)*e3,e1); 
                 (1/4)*mL*g*RotY(-pi/6)*e3];
+% LAMBDA = [(1/4)*mL*g*vec_dot(RotY(0/6)*e3,e1); 
+%                 (1/4)*mL*g*vec_dot(RotY(0/6)*e3,e2);
+%                 (1/4)*mL*g*vec_dot(RotX(0/6)*e3,e1); 
+%                 (1/4)*mL*g*RotY(0/6)*e3];
             
 % << Update this to make it time varying >>
 % r = [params.rb, params.rb(:,1)];
@@ -65,27 +69,24 @@ LAMBDA = [(1/4)*mL*g*vec_dot(RotY(pi/6)*e3,e1);
 %             [zeros(3,1);zeros(3,1);u{3,4};-u{3,4}]];
 
 Tq = reshape(params.Phi_pinv*W + params.N*LAMBDA, 3, nQ);            
-dTq = reshape(params.Phi_pinv*dW + params.N*LAMBDA, 3, nQ);
-d2Tq = reshape(params.Phi_pinv*d2W + params.N*LAMBDA, 3, nQ);
-d3Tq = reshape(params.Phi_pinv*d3W + params.N*LAMBDA, 3, nQ);
-d4Tq = reshape(params.Phi_pinv*d4W + params.N*LAMBDA, 3, nQ);
+dTq = reshape(params.Phi_pinv*dW, 3, nQ);
+d2Tq = reshape(params.Phi_pinv*d2W, 3, nQ);
+d3Tq = reshape(params.Phi_pinv*d3W, 3, nQ);
+d4Tq = reshape(params.Phi_pinv*d4W, 3, nQ);
 
 
 ref.q = zeros(3, nQ);
 ref.omega = zeros(3, nQ);
 ref.RQ = zeros(3,3,nQ);
 ref.OmegaQ = zeros(3,nQ);
+ref.dOmegaQ = zeros(3,nQ);
 ref.u.f = zeros(1, nQ);
 ref.u.M = zeros(3, nQ);
 
 for i = 1:nQ
-    cable = Flat2State.computeLoadAttitudes(Tq(:,i), dTq(:,i), d2Tq(:,i), d3Tq(:,i), d4Tq(:,i), 1);
+    cable = Flat2State.computeLoadAttitudes(-Tq(:,i), -dTq(:,i), -d2Tq(:,i), -d3Tq(:,i), -d4Tq(:,i), 1);
     cable.om = cross(cable.q, cable.dq);
-%     ref.quad(i).q = cable.q;
-%     ref.quad(i).dq = cable.dq;
-%     ref.quad(i).d2q = cable.d2q;
-%     ref.quad(i).om = cable.om;
-
+    cable.dom = cross(cable.q, cable.d2q);
 
     % quadrotor position
     quad_.xQ = traj.xL + traj.RL*params.quad(i).rb - params.quad(i).l*cable.q ;
@@ -95,21 +96,19 @@ for i = 1:nQ
     quad_.d2aQ = traj.d4xL + traj.d4RL*params.quad(i).rb - params.quad(i).l*cable.d4q ;
 
     % quadrotor attitude
-    F = params.quad(i).mQ*(quad_.aQ+g*e3) - Tq(:,i);
-    dF = params.quad(i).mQ*(quad_.daQ) -dTq(:,i);
-    d2F = params.quad(i).mQ*(quad_.d2aQ) -d2Tq(:,i);
+    F = params.quad(i).mQ*(quad_.aQ+g*e3) + Tq(:,i);
+    dF = params.quad(i).mQ*(quad_.daQ) + dTq(:,i);
+    d2F = params.quad(i).mQ*(quad_.d2aQ) + d2Tq(:,i);
 
     [r2] = Flat2State.computeQuadrotorMoment(F, dF, d2F, params.quad(i).mQ, params.quad(i).JQ);
-%     ref.quad(i).R = r2.R;
-%     ref.quad(i).Omega = r2.Om;
-%     ref.quad(i).dOmega = r2.dOm;
-%     ref.quad(i).M = r2.M;
-%     ref.quad(i).f = r2.f;
+
     
     ref.q(:,i) = cable.q;
     ref.omega(:,i) = cable.om;
+    ref.domega(:,i) = cable.dom;
     ref.RQ(:,:,i) = r2.R;
     ref.OmegaQ(:,i) = r2.Om;
+    ref.dOmegaQ(:,i) = r2.dOm;
     ref.u.f(i) = r2.f;
     ref.u.M(:,i) = r2.M;
 end

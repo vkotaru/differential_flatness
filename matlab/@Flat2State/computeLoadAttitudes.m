@@ -1,5 +1,5 @@
 function [ref] = computeLoadAttitudes(Tq, dTq, d2Tq, d3Tq, d4Tq, sgnT)
-
+% default = -1
     
 norm_Tq = norm(Tq);
 q = sgnT*Tq/norm_Tq ;
